@@ -36,10 +36,10 @@
 
 输入以下内容：
 `pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple`
-`pip install PyQt5 PyQt5-tools`
+`pip install PyQt5 pillow`
 
 解释：第一行是把安装源换成清华源。可以提高下载速度。当然如果已经换过源的可以忽略。
-第二行是安装PyQt5和PyQt5-tool两个模块。
+第二行是安装PyQt5和pillow三个模块。
 
 ## 4.检测PyQt是否安装正常
 
