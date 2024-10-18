@@ -35,11 +35,11 @@
 
 图片输入 图片处理 图片输出
 
-处理：训练StableDiffution大模型来输出结果
+处理：使用已训练好的StableDiffution大模型来输出结果
 
 ## 3.UI
 
-使用PyQt5模块和Qtdesigner开发
+使用PyQt5模块，根据已有的UI模版开发
 
 ## 4.美工
 

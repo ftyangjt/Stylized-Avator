@@ -8,13 +8,16 @@ from PyQt5.QtCore import Qt
 from PIL import Image
 import os
 
+# AvatarApp继承自QWiget父类
 class AvatarApp(QWidget):
     def __init__(self):
+        # 初始化父类的属性
         super().__init__()
-
+        # 调用函数，初始化UI
         self.initUI()
 
     def initUI(self):
+        # 设置窗口标题
         self.setWindowTitle('Avatar Stylizer')
 
         # 设置窗口大小为800x600
@@ -22,10 +25,12 @@ class AvatarApp(QWidget):
 
         # 标签显示加载的图像
         self.image_label = QLabel('No Image Loaded', self)
+        # 文字居中
         self.image_label.setAlignment(Qt.AlignCenter)
 
         # 按钮：选择图像
         self.load_image_button = QPushButton('Load Image', self)
+        # 如果按键被按下，调用load_image方法
         self.load_image_button.clicked.connect(self.load_image)
 
         # 文本框：输入prompt
@@ -42,6 +47,7 @@ class AvatarApp(QWidget):
         self.save_button.setEnabled(False)  # 开始时禁用，生成后启用
 
         # 布局
+        # vbox is layout manager
         vbox = QVBoxLayout()
         vbox.addWidget(self.image_label)
         vbox.addWidget(self.load_image_button)
