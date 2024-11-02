@@ -18,49 +18,49 @@ class AvatarStylizer(QWidget):
 
     def initUI(self):
 
-
-        groupbox_height = 45
-
         # 设置窗口标题
         self.setWindowTitle('Avatar Stylizer')
 
-        # 设置窗口大小为800x600
-        self.resize(800, 600)
+        # 设置窗口大小为768x1024
+        self.resize(768, 1024)
 
         # 标签显示加载的图像
         self.image_label = QLabel('No Image Loaded', self)
         self.image_label.setAlignment(Qt.AlignCenter)
         self.image_label.setMinimumSize(512, 512)
-        self.image_label.setScaledContents(False)
+        self.image_label.setScaledContents(False)  # 不允许缩放内容
 
         # 按钮：选择图像
-        self.load_image_button = QPushButton('Load Image(加载图片)', self)
+        self.load_image_button = QPushButton('Load Image\n(加载图片)', self)
         self.load_image_button.clicked.connect(self.load_image)
-        self.load_image_button.setFixedSize(250,75)  
+        self.load_image_button.setFixedSize(250,70)
 
         # 按钮：生成风格化图像
-        self.generate_button = QPushButton('Generate Stylized Image(生成图片)', self)
+        self.generate_button = QPushButton('Generate Stylized Image\n(生成图片)', self)
         self.generate_button.clicked.connect(self.generate_image)
-        self.generate_button.setFixedSize(250,75)  
-  
+        self.generate_button.setFixedSize(250,70)        
 
         # 按钮：保存生成的图像
-        self.save_button = QPushButton('Save Stylized Image(保存图片)', self)
+        self.save_button = QPushButton('Save Stylized Image\n(保存图片)', self)
         self.save_button.clicked.connect(self.save_image)
         self.save_button.setEnabled(False)  # 开始时禁用，生成后启用
-        self.save_button.setFixedSize(250,75)
+        self.save_button.setFixedSize(250,70)
 
         # 文本框：输入prompt
         self.prompt_input = QLineEdit(self)
         self.prompt_input.setPlaceholderText('Enter prompt...(输入prompt)')
-        self.prompt_input.setMinimumHeight(50)
-        # 给出默认negative_prompt
+        self.prompt_input.setFixedHeight(50)
+
+        # 文本框：给出默认negative_prompt
         self.negative_prompt_input = QLineEdit(self)
         self.negative_prompt_input.setPlaceholderText('Enter negative prompt...(输入负面prompt)')
-        self.negative_prompt_input.setMinimumHeight(50)
+        self.negative_prompt_input.setFixedHeight(50)
         self.negative_prompt_input.setText("ugly, deformed, disfigured, poor details, bad anatomy")
 
-
+        # 文本框：种子输入框
+        self.seed_input = QLineEdit(self)
+        self.seed_input.setPlaceholderText("输入种子，留空则随机生成")
+        self.seed_input.setFixedHeight(50)
 
         # guidance_scale模块
         # 设置guidance_scale滑条
@@ -81,7 +81,7 @@ class AvatarStylizer(QWidget):
         guidance_scale_layout.addWidget(self.guidance_scale_silder)
         guidance_scale_layout.addWidget(self.guidance_scale_input)
         self.guidance_scale_group.setLayout(guidance_scale_layout) 
-        self.guidance_scale_group.setFixedHeight(groupbox_height)     
+        self.guidance_scale_group.setFixedHeight(100)     
 
         # 步数模块
         # 设置步数滑条
@@ -104,7 +104,7 @@ class AvatarStylizer(QWidget):
         steps_layout.addWidget(self.steps_silder)
         steps_layout.addWidget(self.steps_input)
         self.steps_group.setLayout(steps_layout) 
-        self.steps_group.setFixedHeight(groupbox_height)
+        self.steps_group.setFixedHeight(100)
 
         # 强度模块
         # 设置强度滑条
@@ -128,28 +128,12 @@ class AvatarStylizer(QWidget):
         strength_layout.addWidget(self.strength_silder)
         strength_layout.addWidget(self.strength_input)
         self.strength_group.setLayout(strength_layout) 
-        self.strength_group.setFixedHeight(groupbox_height)
+        self.strength_group.setFixedHeight(100)
 
-        # 种子模块
-        # 种子输入框
-        self.seed_input = QLineEdit(self)
-        self.seed_input.setPlaceholderText("输入种子")
-        self.seed_input.setFixedHeight(30)
-        # 随机生成种子按钮
-        self.seed_random_botton = QPushButton('随机种子',self)
-        self.seed_random_botton.setFixedSize(40,20)
-        # 用groupbox类建立分组框
-        self.seed_group = QGroupBox("Seed(种子)",self)
-        seed_layout = QHBoxLayout()
-        seed_layout.addWidget(self.seed_input)
-        seed_layout.addWidget(self.seed_random_botton)
-        self.seed_group.setLayout(seed_layout)
-        self.seed_group.setFixedHeight(50)
-
+        # 控制网模型选择
         self.control_net_dict = {
             "kind" : None,
         }
-
 
         self.model_choice = QComboBox()
         self.model_choice.addItems(["stable-diffusion-v1-5"])
@@ -158,8 +142,6 @@ class AvatarStylizer(QWidget):
         self.model_choice_layout.addWidget(self.model_choice)
         self.model_choice_group = QGroupBox("主模型",self)
         self.model_choice_group.setLayout(self.model_choice_layout)
-
-
 
         self.control_net_map = {
             "无":None,
@@ -175,8 +157,7 @@ class AvatarStylizer(QWidget):
         self.control_net_choice_group = QGroupBox("控制网模型",self)
         self.control_net_choice_group.setLayout(self.control_net_choice_layout)
         self.control_net_choice_group.setContentsMargins(10,10,10,10)
-
-        
+   
         self.face_option = QCheckBox("面部蒙版")
         self.face_option.stateChanged.connect(self.face_option_change)
         self.face_option_reverse = QCheckBox("反转蒙版")
@@ -184,8 +165,6 @@ class AvatarStylizer(QWidget):
         self.face_option_layout = QHBoxLayout()
         self.face_option_layout.addWidget(self.face_option)
         self.face_option_layout.addWidget(self.face_option_reverse)
-
-
 
         # 以下是布局设置
         # 第一行框架
@@ -212,9 +191,9 @@ class AvatarStylizer(QWidget):
         vbox.addLayout(set_0_layout,1,0)
         vbox.addWidget(self.prompt_input,2,0)
         vbox.addWidget(self.negative_prompt_input,3,0)
-        vbox.addLayout(set_1_layout,4,0)
-        vbox.addWidget(self.steps_group,5,0)
-        vbox.addWidget(self.seed_group,6,0)
+        vbox.addWidget(self.seed_input,4,0)
+        vbox.addLayout(set_1_layout,5,0)
+        vbox.addWidget(self.steps_group,6,0)
         self.setLayout(vbox)
 
         # 变量存储加载的图像和生成的图像
@@ -318,7 +297,10 @@ class AvatarStylizer(QWidget):
             self.guidance_scale = int(self.guidance_scale_input.text())
             self.steps = self.steps_silder.value()
             self.strength = self.strength_silder.value()/100
-            self.seed = int(self.seed_input.text())
+            if self.seed_input.text() == "":
+                self.seed= -1
+            else:
+                self.seed = int(self.seed_input.text())
             self.face_mask = self.face_option_judge()
 
             if self.seed_input.text() == "":
