@@ -13,7 +13,8 @@ from compel import Compel
 from preprocessor import (
     get_depth_map,
     get_array_map,
-    create_face_mask,    
+    create_face_mask,
+    blur_mask    
     )
 
 from diffusers import (
@@ -58,7 +59,8 @@ def test(inuput_picture_address,
     steps = steps_in
     strength = strength_in
     seed = seed_in
-    model_id = "./models/models--stable-diffusion-v1-5--stable-diffusion-v1-5"
+    #model_id = "./models/models--stable-diffusion-v1-5--stable-diffusion-v1-5"
+    model_id = "./models/artStyleXXX_v10"
     generator = torch.Generator(device=device).manual_seed(seed)
 
 
@@ -84,12 +86,12 @@ def test(inuput_picture_address,
         pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 
     def add_lora():
-        lora = 0
+        lora = 1
         #Lora
         #lora = "./Lora_models/fechin.safetensors"
         #monet_v2-000004.safetensors
         if lora == 1:
-            lora = "./Lora_models/monet_v2-000004.safetensors"
+            lora = "./Lora_models/slg_v30.safetensors"
             lora_scale = 1.0
             pipe.load_lora_weights(lora,adapter_name="Lora1")
             adapter_weight_scales = {
@@ -100,7 +102,8 @@ def test(inuput_picture_address,
                 }             
                                     }
 
-            pipe.set_adapters("Lora1", adapter_weight_scales)
+            #pipe.set_adapters("Lora1", adapter_weight_scales)
+            pipe.set_adapters("Lora1")
 
     #promt预处理，使用户可以在词后加入+或-改变权重
     def compel_prompt(prompt):   
@@ -122,6 +125,7 @@ def test(inuput_picture_address,
             torch_dtype=torch.float16,
             cache_dir="./models/",
             use_safetensors=True,
+            safety_checker = None
             ).to(device)
         
         add_scheduler()
@@ -151,10 +155,11 @@ def test(inuput_picture_address,
         torch_dtype=torch.float16,
         cache_dir="./cache/",
         use_safetensors=True,
+        safety_checker = None
         ).to(device)
 
         mask = create_face_mask(init_image, face_mask)
-        blurred_mask = pipe.mask_processor.blur(mask, blur_factor=33)
+        blurred_mask = blur_mask(mask)
         
         add_scheduler()
         add_lora()
@@ -187,6 +192,7 @@ def test(inuput_picture_address,
             cache_dir="./models/",
             use_safetensors=True,
             controlnet=controlnet,
+            safety_checker = None
             ).to(device)
 
             add_scheduler()
@@ -221,6 +227,7 @@ def test(inuput_picture_address,
         cache_dir="./models/",
         use_safetensors=True,
         controlnet=controlnet,
+        safety_checker = None
         ).to(device)
 
 

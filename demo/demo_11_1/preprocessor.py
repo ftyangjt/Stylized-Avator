@@ -26,6 +26,8 @@ def get_array_map(init_image):
     )
     image_array = image_array[:, :, None]
     image_array = np.concatenate([image_array, image_array, image_array], axis=2)
+    image_array = Image.fromarray(cv2.cvtColor(image_array, cv2.COLOR_BGR2RGB))
+    image_array.save("./AAA/0B1.png")
     return image_array
 
 #深度图
@@ -41,7 +43,7 @@ def get_depth_map(init_image):
     depth_map = detected_map.permute(2, 0, 1)
     depth_map = depth_map.unsqueeze(0).half()
     test_image = tensor_to_pil(depth_map)
-    test_image.save("./AAA/0A1.png")
+    test_image.save("./AAA/0C1.png")
 
     return depth_map
 
@@ -50,7 +52,7 @@ def get_depth_map(init_image):
 def create_face_mask(pil_image, face_mask_class):
     # 初始化MediaPipe人脸检测模块
     mp_face_detection = mp.solutions.face_detection
-    face_detection = mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence=0.3)
+    face_detection = mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.15)
     #1远景，0近景
     #最低置信度
 
@@ -87,3 +89,20 @@ def create_face_mask(pil_image, face_mask_class):
 
     return mask_image
 
+
+def blur_mask(mask_in):
+    mask = mask_in.convert("L")
+    mask = np.array(mask)
+
+    # 创建掩码：将黑色部分设为 1，其余部分设为 0
+    black_mask = (mask == 0).astype(np.uint8)
+
+    # 高斯模糊处理整个图像
+    blurred_image = cv2.GaussianBlur(mask, (65, 65), 0)
+
+    # 使用掩码将黑色部分覆盖回模糊后的图像
+    final_mask = cv2.bitwise_and(mask, mask, mask=black_mask) + cv2.bitwise_and(blurred_image, blurred_image, mask=1 - black_mask)
+
+    final_mask = Image.fromarray(cv2.cvtColor(final_mask, cv2.COLOR_BGR2RGB))
+    final_mask.save("./AAA/0A2.png")
+    return final_mask
