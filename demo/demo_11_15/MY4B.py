@@ -111,7 +111,7 @@ def build_pipeline(
         add_lora()
         #add_vae("./models/artStyleXXX_v10/vae")
         
-        print("1")
+        print("1:原始图生图管道")
 
     elif control_net_kind==None and face_mask!=None:
 
@@ -127,7 +127,7 @@ def build_pipeline(
         add_scheduler()
         add_lora()
         #add_vae("./models/artStyleXXX_v10/vae")
-        print("2")
+        print("2:人脸蒙版管道")
         
     elif control_net_kind=="dpt" and face_mask==None:
             
@@ -148,7 +148,7 @@ def build_pipeline(
             add_scheduler()
             add_lora()
             #add_vae("./models/artStyleXXX_v10/vae")
-            print("3")
+            print("3:深度图管道")
 
     elif control_net_kind=="array" and face_mask==None:
 
@@ -168,7 +168,7 @@ def build_pipeline(
         add_scheduler()
         add_lora()
         #add_vae("./models/artStyleXXX_v10/vae")
-        print("4")
+        print("4:边缘图管道")
 
     elif control_net_kind=="dpt" and face_mask!=None:
         net_model_address = "./ControlNet_models/models--lllyasviel--control_v11f1p_sd15_depth"
@@ -187,7 +187,7 @@ def build_pipeline(
         add_scheduler()
         add_lora()
         #add_vae("./models/artStyleXXX_v10/vae")
-        print("人脸蒙版加深度图pipeline")
+        print("人脸蒙版加深度图管道")
 
         
     print("构建管道")   

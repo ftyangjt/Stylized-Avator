@@ -20,6 +20,7 @@ class AvatarStylizer(QWidget):
 
     def initUI(self):
 
+        #把下面的改为75可以调大组件
         groupbox_height = 45
 
         # 设置窗口标题
@@ -45,7 +46,7 @@ class AvatarStylizer(QWidget):
         self.bulid_pipeline_button.setFixedSize(250,75) 
 
         # 按钮：生成风格化图像
-        self.generate_button = QPushButton('生成图片，记得构建', self)
+        self.generate_button = QPushButton('生成图片', self)
         self.generate_button.clicked.connect(self.generate_button_pushed)
         self.generate_button.setFixedSize(250,75)  
   
@@ -308,6 +309,7 @@ class AvatarStylizer(QWidget):
             self.image_label.setPixmap(scaled_pixmap)
             self.image_label.setText("")  # 清除默认标签
 
+    #构造和更新pipeline函数
     def bulid_pipeline(self, then_generate=False):
         try:
                        
@@ -349,13 +351,13 @@ class AvatarStylizer(QWidget):
         self.pipeline_builded = True
         self.pipe = pipe   
 
-
+    #点击生成按钮判断是否更新了管道
     def generate_button_pushed(self):
         if self.pipeline_builded == False:
             self.bulid_pipeline(then_generate=True)   
         else:    
             self.generate_image()
-        
+    #生成图片
     def generate_image(self):
         # 检查是否加载了图像
         if not self.loaded_image_path:
